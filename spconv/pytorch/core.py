@@ -12,7 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from . import build as _build
+import torch 
+remove_plus = torch.__version__.find("+")
+remove_dotdev = torch.__version__.find(".dev")
 
-from .core import ConvAlgo, AlgoHint
-from . import constants
+PYTORCH_VERSION = torch.__version__
+if remove_plus != -1:
+    PYTORCH_VERSION = torch.__version__[:remove_plus]
+if remove_dotdev != -1:
+    PYTORCH_VERSION = torch.__version__[:remove_dotdev]
+
+PYTORCH_VERSION = list(map(int, PYTORCH_VERSION.split(".")))
+if PYTORCH_VERSION >= [1, 8, 0]:
+    from .core_fx import *
+else:
+    from .core import *
